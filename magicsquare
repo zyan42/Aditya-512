@@ -1,0 +1,198 @@
+n = int(input())
+def creatingSquare(n):
+    # 2-D array with all slots set to 0
+    mgsqr = [[0 for x in range(n)]
+             for y in range(n)]
+
+    # initialize position of 1
+    r = n // 2
+    c = n - 1
+    # Fill the magic square by placing values
+    num = 1
+    while num <= (n * n):
+        if r == -1 and c == n:  # 3rd condition
+            c = n - 2
+            r = 0
+        else:
+            # next number goes out of right side of square
+            if c == n:
+                c = 0
+            # next number goes out of upper side
+            if r < 0:
+                r = n - 1
+
+        if mgsqr[int(r)][int(c)]:  # 2nd condition
+            c = c - 2
+            r = r + 1
+            continue
+        else:
+            mgsqr[int(r)][int(c)] = num
+            num = num + 1
+
+        c = c + 1
+        r = r - 1  # 1st condition
+
+    # Printing magic square
+    print("Magic Square for n =", n)
+    print("Sum of each row or column or diagonal",
+          n * (n * n + 1) // 2, "\n")
+
+    for i in range(0, n):
+        for j in range(0, n):
+            print('%2d ' % (mgsqr[i][j]),
+                  end='')
+
+            if j == n - 1:
+                print()
+
+
+# n = 5
+# creatingSquare(n)
+
+
+def DoublyEven(n):
+    # 2-D matrix with all entries as 0
+    arr = [[(n * y) + x + 1 for x in range(n)] for y in range(n)]
+
+    # Change value of array elements at fix location
+    # as per the rule (n*n+1)-arr[i][[j]
+
+    # Corners of order (n/4)*(n/4)
+    # Top left corner
+    for rownum in range(0, n // 4):
+        for colnum in range(0, n // 4):
+            arr[rownum][colnum] = (n * n + 1) - arr[rownum][colnum]
+
+    # Top right corner
+    for rownum in range(0, n // 4):
+        for colnum in range(3 * (n // 4), n):
+            arr[rownum][colnum] = (n * n + 1) - arr[rownum][colnum]
+
+    # Bottom Left corner
+    for rownum in range(3 * (n // 4), n):
+        for colnum in range(0, n // 4):
+            arr[rownum][colnum] = (n * n + 1) - arr[rownum][colnum]
+
+    # Bottom Right corner
+    for rownum in range(3 * (n // 4), n):
+        for colnum in range(3 * (n // 4), n):
+            arr[rownum][colnum] = (n * n + 1) - arr[rownum][colnum]
+
+    # Centre of matrix,order (n/2)*(n/2)
+    for rownum in range(n // 4, 3 * (n // 4)):
+        for colnum in range(n // 4, 3 * (n // 4)):
+            arr[rownum][colnum] = (n * n + 1) - arr[rownum][colnum]
+
+    # Printing the square
+    for rownum in range(n):
+        for colnum in range(n):
+            print('%2d ' % (arr[rownum][colnum]), end=" ")
+        print()
+
+
+# Driver Program
+# n = 8
+# DoublyEven(n)
+
+
+
+
+import math
+from sys import stdout
+
+LOG_10 = 2.302585092994
+
+
+# build odd magic square
+def build_oms(s):
+    if s % 2 == 0:
+        s += 1
+    q = [[0 for j in range(s)] for i in range(s)]
+    p = 1
+    i = s // 2
+    j = 0
+    while p <= (s * s):
+        q[i][j] = p
+        ti = i + 1
+        if ti >= s: ti = 0
+        tj = j - 1
+        if tj < 0: tj = s - 1
+        if q[ti][tj] != 0:
+            ti = i
+            tj = j + 1
+        i = ti
+        j = tj
+        p = p + 1
+
+    return q, s
+
+
+# build singly even magic square
+def build_sems(s):
+    if s % 2 == 1:
+        s += 1
+    while s % 4 == 0:
+        s += 2
+
+    q = [[0 for j in range(s)] for i in range(s)]
+    z = s // 2
+    b = z * z
+    c = 2 * b
+    d = 3 * b
+    o = build_oms(z)
+
+    for j in range(0, z):
+        for i in range(0, z):
+            a = o[0][i][j]
+            q[i][j] = a
+            q[i + z][j + z] = a + b
+            q[i + z][j] = a + c
+            q[i][j + z] = a + d
+
+    lc = z // 2
+    rc = lc
+    for j in range(0, z):
+        for i in range(0, s):
+            if i < lc or i > s - rc or (i == lc and j == lc):
+                if not (i == 0 and j == lc):
+                    t = q[i][j]
+                    q[i][j] = q[i][j + z]
+                    q[i][j + z] = t
+
+    return q, s
+
+
+def format_sqr(s, l):
+    for i in range(0, l - len(s)):
+        s = "0" + s
+    return s + " "
+
+
+def display(q):
+    s = q[1]
+    print(" - {0} x {1}\n".format(s, s))
+    k = 1 + math.floor(math.log(s * s) / LOG_10)
+    for j in range(0, s):
+        for i in range(0, s):
+            stdout.write(format_sqr("{0}".format(q[0][i][j]), k))
+        print()
+    print("Magic sum: {0}\n".format(s * ((s * s) + 1) // 2))
+
+
+# stdout.write("Singly Even Magic Square")
+# display(build_sems(6))
+if n%2 != 0:
+    creatingSquare(n)
+elif n%4 == 0:
+    DoublyEven(n)
+    print("Magic Square for n =", n)
+    print("Sum of each row or column or diagonal",
+          n * (n * n + 1) // 2, "\n")
+elif n%2 == 0 and n%4 != 0 and n != 2:
+    stdout.write("Singly Even Magic Square")
+    display(build_sems(n))
+    print("Magic Square for n =", n)
+    print("Sum of each row or column or diagonal",
+          n * (n * n + 1) // 2, "\n")
+elif n == 2:
+    print("not valid for order 2")
