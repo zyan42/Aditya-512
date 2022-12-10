@@ -1,3 +1,6 @@
+print("Magic square")
+print("\n")
+
 n = int(input())
 def creatingSquare(n):
     # 2-D array with all slots set to 0
